@@ -18,3 +18,10 @@ def test_raises_error_when_file_does_not_exist(tmp_path):
 
     with pytest.raises(FileNotFoundError, match="File not found"):
         read_file(missing_file)
+
+def test_raises_error_when_path_is_directory(tmp_path):
+    directory = tmp_path / "sample_folder"
+    directory.mkdir()
+
+    with pytest.raises(IsADirectoryError):
+        read_file(directory)
