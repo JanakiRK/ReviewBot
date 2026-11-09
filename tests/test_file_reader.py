@@ -25,3 +25,7 @@ def test_raises_error_when_path_is_directory(tmp_path):
 
     with pytest.raises(IsADirectoryError):
         read_file(directory)
+
+def test_rejects_none_as_file_path():
+    with pytest.raises(TypeError):
+        read_file(None)
