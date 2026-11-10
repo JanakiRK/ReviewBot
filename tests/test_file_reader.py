@@ -29,3 +29,25 @@ def test_raises_error_when_path_is_directory(tmp_path):
 def test_rejects_none_as_file_path():
     with pytest.raises(TypeError):
         read_file(None)
+
+def test_rejects_empty_file_path():
+    with pytest.raises(ValueError, match="cannot be empty"):
+        read_file("")
+
+
+def test_rejects_invalid_input_type():
+    with pytest.raises(TypeError, match="string or Path"):
+        read_file(123)
+
+
+def test_handles_permission_error(tmp_path, monkeypatch):
+    file_path = tmp_path / "sample.py"
+    file_path.write_text("print('Hello')")
+
+    def mock_open(*args, **kwargs):
+        raise PermissionError("Access denied")
+
+    monkeypatch.setattr("builtins.open", mock_open)
+
+    with pytest.raises(PermissionError, match="Cannot read file"):
+        read_file(file_path)
